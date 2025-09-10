@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CV Scoring LLM</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>CV Scoring <span class="badge">LLM</span></h1>
+    <p class="tagline">Upload a PDF CV + paste a Markdown Job Description to get a structured fit score.</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel">
+      <h2>Submit for Scoring</h2>
+      <form id="scoreForm" class="form" enctype="multipart/form-data" method="post" action="/score-cv">
+        <div class="field-group">
+          <label class="field-label">CV PDF<span>*</span></label>
+          <input type="file" name="cv" id="cvInput" accept="application/pdf" required />
+          <small class="hint">Max 5MB • PDF only</small>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Job Description (Markdown)<span>*</span></label>
+          <textarea name="jd" id="jdInput" rows="10" required># Backend Engineer JD
+- Python
+- SQL
+- 3+ years backend experience
+</textarea>
+          <small class="hint">Paste or edit raw Markdown text.</small>
+        </div>
+        <div class="field-group inline">
+          <label class="toggle"><input type="checkbox" id="includeCvText" name="includeCvText" /> Include extracted CV text in response</label>
+          <small class="hint">Toggle to retrieve and view parsed plain text (may be large).</small>
+        </div>
+        <div class="actions">
+          <button type="submit" id="submitBtn" class="btn primary">Score CV</button>
+          <button type="reset" class="btn">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel" id="resultPanel">
+      <div class="result-header">
+        <h2>Result</h2>
+        <button class="btn subtle" id="copyBtn" title="Copy JSON" disabled>Copy JSON</button>
+      </div>
+      <div id="loading" class="loading hidden">Analyzing with LLM<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+      <pre id="result" class="result-placeholder">No result yet.</pre>
+      <details id="cvTextContainer" class="hidden cv-text-wrapper">
+        <summary>Extracted CV Text</summary>
+        <pre id="cvText" class="cv-text"></pre>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Built with Express, pdf-parse & OpenAI. This demo doesn’t store files.</p>
+  </footer>
+
+  <script src="/script.js" type="module"></script>
+</body>
+</html>
