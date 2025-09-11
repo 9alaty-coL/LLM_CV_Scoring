@@ -1,3 +1,5 @@
+// Load environment variables as early as possible so that constants below see them.
+import 'dotenv/config';
 import OpenAI from 'openai';
 import { safeJsonParse } from '../utils/text.js';
 

@@ -17,12 +17,12 @@
 
   <main class="layout">
     <section class="panel">
-      <h2>Submit for Scoring</h2>
+      <h2>Bulk CV Scoring</h2>
       <form id="scoreForm" class="form" enctype="multipart/form-data" method="post" action="/score-cv">
         <div class="field-group">
-          <label class="field-label">CV PDF<span>*</span></label>
-          <input type="file" name="cv" id="cvInput" accept="application/pdf" required />
-          <small class="hint">Max 5MB • PDF only</small>
+          <label class="field-label">CV PDFs (multiple)<span>*</span></label>
+          <input type="file" name="cv" id="cvInput" accept="application/pdf" multiple required />
+          <small class="hint">Select one or more PDF files (each ≤5MB)</small>
         </div>
         <div class="field-group">
           <label class="field-label">Job Description (Markdown)<span>*</span></label>
@@ -31,30 +31,54 @@
 - SQL
 - 3+ years backend experience
 </textarea>
-          <small class="hint">Paste or edit raw Markdown text.</small>
+          <small class="hint">Paste Markdown or use the JD file input below.</small>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Load JD From File (.txt / .md)</label>
+          <input type="file" id="jdFileInput" accept=".txt,.md,text/plain,markdown" />
+          <small class="hint">Selecting a file will overwrite the textarea content.</small>
         </div>
         <div class="field-group inline">
           <label class="toggle"><input type="checkbox" id="includeCvText" name="includeCvText" /> Include extracted CV text in response</label>
           <small class="hint">Toggle to retrieve and view parsed plain text (may be large).</small>
         </div>
         <div class="actions">
-          <button type="submit" id="submitBtn" class="btn primary">Score CV</button>
+          <button type="submit" id="submitBtn" class="btn primary">Score CVs</button>
           <button type="reset" class="btn">Reset</button>
+          <button type="button" id="exportCsvBtn" class="btn" disabled>Export CSV</button>
         </div>
       </form>
     </section>
 
-    <section class="panel" id="resultPanel">
+  <section class="panel" id="resultPanel">
       <div class="result-header">
-        <h2>Result</h2>
+        <h2>Results</h2>
         <button class="btn subtle" id="copyBtn" title="Copy JSON" disabled>Copy JSON</button>
       </div>
       <div id="loading" class="loading hidden">Analyzing with LLM<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+      <div id="tableWrapper" class="hidden">
+        <table id="resultsTable" class="results-table">
+          <thead>
+            <tr><th>File</th><th>Score</th><th>Explanation</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
       <pre id="result" class="result-placeholder">No result yet.</pre>
       <details id="cvTextContainer" class="hidden cv-text-wrapper">
         <summary>Extracted CV Text</summary>
         <pre id="cvText" class="cv-text"></pre>
       </details>
+    </section>
+
+    <section class="panel" id="bulkDatasetPanel">
+      <h2>Dataset CSV Runner</h2>
+      <p class="hint" style="margin-top:0">Reads <code>./dataset/test.csv</code> plus PDFs in <code>./dataset/cvs/</code> and JDs in <code>./dataset/jds/</code> on the server and returns a new CSV with <code>llm_score</code>.</p>
+      <div class="actions" style="margin-top:1rem;">
+        <button class="btn primary" id="runDatasetBtn">Run Dataset</button>
+        <button class="btn" id="downloadDatasetBtn" disabled>Download Last CSV</button>
+      </div>
+      <pre id="datasetStatus" class="dataset-status" style="margin-top:1rem;">Idle.</pre>
     </section>
   </main>
 
