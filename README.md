@@ -1,4 +1,4 @@
-# CV Scoring LLM Service
+# CV Scoring LLM Service.
 
 Node.js + Express microservice to score a candidate CV PDF against a Job Description (Markdown) using an OpenAI model.
 
